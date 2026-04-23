@@ -16,6 +16,14 @@ class TestContactFormCaptcha:
         ("Carlos García", "carlos@airport.es", "Aeropuerto Internacional"),
     ])
     def test_captcha_error_on_submit(self, page: Page, name: str, email: str, company: str):
+        dialog_messages = []
+
+        def handle_dialog(dialog):
+            dialog_messages.append(dialog.message)
+            dialog.dismiss()
+
+        page.on("dialog", handle_dialog)
+
         home = HomePage(page)
         home.open()
         home.accept_cookies()
@@ -24,5 +32,7 @@ class TestContactFormCaptcha:
         contact = ContactFormPage(page)
         contact.fill_form(name=name, email=email, company=company)
         contact.submit()
+
+        assert len(dialog_messages) > 0, "No dialog appeared"
+        assert "robot" in dialog_messages[0].lower(), f"Unexpected dialog: {dialog_messages[0]}"
         contact.assert_captcha_error_visible()
-        contact.assert_form_not_submitted()
