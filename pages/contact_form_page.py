@@ -34,3 +34,7 @@ class ContactFormPage(BasePage):
         self.page.wait_for_selector(self.CAPTCHA_ERROR, state="attached", timeout=5000)
         expect(self.page.locator(self.CAPTCHA_ERROR).first).to_be_attached()
         self.screenshot("captcha_error")
+
+    @allure.step("Assert form was not submitted")
+    def assert_form_not_submitted(self) -> None:
+        self.assert_visible(".modal_cta.is-visible")

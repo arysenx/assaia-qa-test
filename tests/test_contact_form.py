@@ -25,3 +25,4 @@ class TestContactFormCaptcha:
         contact.fill_form(name=name, email=email, company=company)
         contact.submit()
         contact.assert_captcha_error_visible()
+        contact.assert_form_not_submitted()
